@@ -20,13 +20,26 @@ public class Bus {
 		pasajeros = new Pasajero[40];
 	}
 
+	/**
+	 * Agrega pasajeros al bus, en caso de que el asiento esta ocupado o no
+	 * existe, retorna falso, en caso de colocar exitosamente al pasajero en
+	 * el bus, retorna verdadero.
+	 * @param numeroAsiento
+	 * @param pasajero
+	 * @return Verdadero, al integrar al pasajero. Falso si no pudo
+	 */
 	public boolean agregarPasajeros(int numeroAsiento, Pasajero pasajero) {
+		//Variable de retorno que avisa si el pasajero pudo o no sentarse
 		boolean disponibilidad;
-		System.out.println("El numero que entro es de : " + numeroAsiento);
+		//Revisa si el asiento especificado existe en el bus
 		if (numeroAsiento > 40 || numeroAsiento < 0) {
-			System.out.println("El asiento no existe en el bus.");
+			System.out.println("El asiento no existe en el bus los asientos "
+				+ "disponibles estan ente el 1 y el 40");
 			disponibilidad = false;
-		} else if (pasajeros[numeroAsiento - 1] == null) {
+		} //Revisa que el asiento especificado este vacio
+		//viendo que en el arreglo de pasajeros no exista alguien
+		else if (pasajeros[numeroAsiento - 1] == null) {
+			//Agrega el pasajero al arreglo de pasajeros
 			pasajeros[numeroAsiento - 1] = pasajero;
 			//Agrega el pago del pasajero a la ganancia total
 			if (pasajero.isDescuento()) {
@@ -39,12 +52,14 @@ public class Bus {
 				+ " se sento en el asiento " + numeroAsiento
 				+ " y su estado de descuento es: " + pasajero.isDescuento());
 			disponibilidad = true;
-		} else {
+		} //En caso de que el asiento se encuentre ocupado
+		else {
 			System.out.println("Asiento ya ocupado por "
 				+ pasajeros[numeroAsiento - 1].getNombre()
 				+ ", intente con otro número!");
 			disponibilidad = false;
 		}
+		//Retorna si el asiento fue o no ocupado.
 		return disponibilidad;
 
 	}

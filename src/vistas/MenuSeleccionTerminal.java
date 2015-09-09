@@ -16,50 +16,62 @@ import modelos.Pasajero;
  */
 public class MenuSeleccionTerminal {
 
-	private final static String decorador
-		= "============================================";
+	//Constantes usadas en el menu
+	private final static int ESTABLECER_PASAJE = 1;
+	private final static int AGREGAR_PASAJERO = 2;
+	private final static int VER_GANANCIA = 3;
+	private final static int SALIR = 4;
 
 	public static void menu() {
+		//La opcion elegida en el menu
 		int opcion = 0;
+		//Para mantenerse en el menu
 		boolean continuar = true;
-		boolean formatoInadecuado;
 		Scanner sc = new Scanner(System.in);
 		//Crea un nuevo bus con un valor de pasaje inicial de $500
 		Bus bus = new Bus(500);
+		//Entra al menu
 		while (continuar) {
 			System.out.println("");
-			System.out.println(decorador);
-			System.out.println("Elija una opción:");
-			System.out.println("1.- Establecer valor del pasaje.");
-			System.out.println("2.- Agregar pasajero.");
-			System.out.println("3.- Ver ganancia.");
-			System.out.println("4.- Salir.");
-			System.out.print("Inserte una opción: ");
+			decorar();
+			System.out.println("Elija una opción:\n"
+				+ "1.- Establecer valor del pasaje.\n"
+				+ "2.- Agregar pasajero.\n"
+				+ "3.- Ver ganancia.\n"
+				+ "4.- Salir.\n"
+				+ "Inserte una opción: ");
 			opcion = validarNumero(sc);
 			switch (opcion) {
-				case 1:
-					System.out.println(decorador);
+				case ESTABLECER_PASAJE:
+					decorar();
 					System.out.print("Inserte el valor del pasaje: ");
 					bus.setValorPasaje(validarNumero(sc));
-					System.out.println(decorador);
-					System.out.println("El valor del pasaje se dejó en " 
+					decorar();
+					System.out.println("El valor del pasaje se dejó en "
 						+ bus.getValorPasaje());
 					break;
-				case 2:
-					System.out.println(decorador);
+				case AGREGAR_PASAJERO:
 					String nombre;
 					boolean descuento,
-					 disponible = false;
+					 disponible;
 					int asiento;
+					decorar();
 					System.out.println("¿Cómo se llama nuestro pasajero?");
 					nombre = sc.next();
+					//Revisa que se escriba s o si, en ese caso, el pasajero
+					//tiene descuento
 					System.out.println("¿Tiene alguna clase de descuento? s/n: ");
-					descuento = sc.next().equals("s");
+					String confirmacion = sc.next();
+					descuento = confirmacion.equals("s") || confirmacion.equals("si");
+					//Consulta en donde se sentara el pasajero, en caso de
+					//no existir el asiento, o este este ocupado, consultara
+					//si desea escribir nuevamente otro asiento
 					do {
 						System.out.println("¿En donde se sentará?");
 						asiento = validarNumero(sc);
 						disponible = bus.agregarPasajeros(
 							asiento, new Pasajero(nombre, descuento));
+						//Si no esta disponible, avisa y consulta el curso de accion
 						if (!disponible) {
 							System.out.print("Asiento ya ocupado... "
 								+ "¿Desea intentarlo otra vez? s/n: ");
@@ -68,21 +80,28 @@ public class MenuSeleccionTerminal {
 							}
 						}
 					} while (!disponible);
-					System.out.println(decorador);
+					decorar();
 					break;
-				case 3:
-					System.out.println(decorador);
+				case VER_GANANCIA:
+					decorar();
 					System.out.println("La ganancia hasta el momento es de: "
 						+ bus.verGanancia());
-					System.out.println(decorador);
+					decorar();
 					break;
-				case 4:
-					System.out.println(decorador);
+				case SALIR:
 					continuar = false;
 					break;
 
 			}
 		}
+		decorar();
+		System.out.println("Cerrando el programa...");
+		decorar();
+	}
+
+	private static void decorar() {
+		String decorador = "============================================";
+		System.out.println(decorador);
 	}
 
 	private static int validarNumero(Scanner sc) {
@@ -91,10 +110,18 @@ public class MenuSeleccionTerminal {
 		while (formatoInadecuado) {
 			try {
 				opcion = sc.nextInt();
+				//En caso de que sea algun numero negativo, vuelve a preguntar
+				if (opcion < 0) {
+					System.out.println("\nNo se aceptan numero negativos.\n"
+						+ "escribalo nuevamente");
+					continue;
+				}
+				//Si paso la validacion, permite salir del while
 				formatoInadecuado = false;
-			} catch (InputMismatchException ex) {
-				System.out.println("");
-				System.out.print("Esta mal escrito el número, escríbalo nuevamente: ");
+			} //Captura la excepcion cuando se escribe un mal formato, por ejemplo
+			//letras, al pedir numeros
+			catch (InputMismatchException ex) {
+				System.out.print("\nEsta mal escrito el número, escríbalo nuevamente: ");
 			}
 		}
 		return opcion;
